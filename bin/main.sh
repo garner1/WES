@@ -3,8 +3,8 @@
 exp=$1				# name of the experimen, eg: MN14
 run=$2				# bc124
 datadir=$3			# /media/garner1/hdd/WES/${exp}_${run} 
-R1=$3				# full path to R1 file
-R2=$4	                        # full path to R2 file
+R1=$4				# full path to R1 file
+R2=$5	                        # full path to R2 file
 
 refgen=~/Work/genomes/Homo_sapiens.GRCh37.dna.primary_assembly.fa/GRCh37.fa # full path to reference genome
 numbproc=32
