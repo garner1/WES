@@ -29,7 +29,7 @@ fi
 
 echo "Coverage calculation ..."
 if [ ! -f $datadir/$exp.hist.txt ]; then
-    bedtools coverage -hist -abam $datadir/$exp.bam.deduplicated.sorted.bam -b ~/Work/pipelines/data/agilent/S07604715_Covered.woChr.bed > $datadir/$exp.hist.txt
+    bedtools coverage -hist -b $datadir/$exp.bam.deduplicated.sorted.bam -a ~/Work/pipelines/data/agilent/S07604715_Covered.woChr.bed > $datadir/$exp.hist.txt
 fi
 echo "Done!"
 echo
