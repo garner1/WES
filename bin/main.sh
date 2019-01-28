@@ -22,7 +22,7 @@ if [ ! -f $datadir/$exp.bam.bai ]; then
 fi
 echo "Deduplicating ..."
 if [ ! -f $datadir/$exp.bam.deduplicated.bam ]; then
-    umi_tools dedup -I $datadir/$exp.bam  --paired -S $datadir/$exp.bam.deduplicated.bam --umi-separator=: --edit-distance-threshold 2 -L $datadir/$exp.group.log 
+    umi_tools dedup -I $datadir/$exp.bam  --paired -S $datadir/$exp.bam.deduplicated.bam --umi-separator=: --edit-distance-threshold 2 -L $datadir/$exp.group.log --output-stats=$datadir/$exp
 fi
 if [ ! -f $datadir/$exp.bam.deduplicated.sorted.bam ]; then
     samtools sort $datadir/$exp.bam.deduplicated.bam -o $datadir/$exp.bam.deduplicated.sorted.bam
