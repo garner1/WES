@@ -13,7 +13,7 @@ datadir=/media/garner1/hdd/WES/${exp}_${run}
 mkdir -p $datadir
 echo "Aligning ..."
 if [ ! -f $datadir/$exp.bam.bai ]; then
-    bwa mem -v 1 -t $numbproc $refgen $R1 $R2 | samtools sort > $datadir/$exp.bam
+    bwa mem -v 1 -t $numbproc $refgen $R1 $R2 | samtools sort -T $exp > $datadir/$exp.bam
     # bwa mem -v 1 -t $numbproc $refgen $R1 $R2 > $datadir/$exp.sam
     # samtools view -h -Sb $datadir/$exp.sam > $datadir/$exp.bam
     # rm $datadir/$exp.sam
