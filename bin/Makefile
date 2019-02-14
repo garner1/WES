@@ -28,6 +28,7 @@ dedup:
 dedup_parallel:				#parallelize wrt chromosomes
 	umi_tools dedup --chrom $(chrom) -I $(bamfile) --paired -S $(prefix).$(chrom).dedup.bam --umi-separator=: \
 	--edit-distance-threshold 2 -L $(prefix).$(chrom).log --output-stats=$(prefix).$(chrom)
+	samtools merge -@ 24 $(prefix).dedup.bam $(prefix).$(chrom).dedup.bam
 
 varcall:
 	bcftools mpileup -uvf ${REF} $(bamfilePrefix).dedup.bam | bcftools call -vm -Ov >  $(bamfilePrefix).vcf
