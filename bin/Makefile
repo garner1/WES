@@ -7,6 +7,7 @@ usage:
 	@echo "       make R1=fullpath R2=fullpath R1.fastp.gz=fullpath R2.fastp.gz=fullpath sampleID=string preprocessing"
 	@echo "       make exp=string run=string R1=fullpath R2=fullpath align"
 	@echo "       make bamfile=fullpath  dedupbam=fullpath logfile=fullpath datadir=fullpath dedup"
+	@echo "       make bamfile=fullpath chrom=chr prefix=fullpathPrefix dedup_parallel"
 
 demultiplex:
 	mkdir -p $(out)
@@ -19,6 +20,10 @@ align:
 	mkdir -p ${datadir}
 	bwa mem -v 1 -t ${numbproc} ${refgen} $(R1) $(R2) | samtools sort -T $(exp) > ${datadir}/$(exp).bam
 
-dedup:
+dedup:	
 	umi_tools dedup -I $(bamfile)  --paired -S $(dedupbam) --umi-separator=: \
 	--edit-distance-threshold 2 -L $(logfile) --output-stats=$(datadir)
+
+dedup_parallel:				#parallelize wrt chromosomes
+	umi_tools dedup --chrom $(chrom) -I $(bamfile) --paired -S $(prefix).$(chrom).dedup.bam --umi-separator=: \
+	--edit-distance-threshold 2 -L $(prefix).$(chrom).log --output-stats=$(prefix).$(chrom)
