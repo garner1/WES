@@ -1,6 +1,7 @@
 REF=~/Work/genomes/Homo_sapiens.GRCh37.dna.primary_assembly.fa/GRCh37.fa
 numbproc=24
 datadir=/media/garner1/hdd/WES/$(exp)_$(run) 
+target=~/Work/dataset/agilent/S07604715_Covered.woChr.bed
 
 usage:
 	@echo "Usage: make rawDataDir=fullpath baseCalls=fullpath out=fullpath demultiplex"
@@ -10,6 +11,7 @@ usage:
 	@echo "       make chrom=chr prefix=fullpathPrefix dedup_parallel"
 	@echo "       make bamfilePrefix=fullpathPrefix varcall_mpileup"
 	@echo "       make bamfilePrefix=fullpathPrefix varcall_freebayes"
+	@echo "       make bamfilePrefix=fullpathPrefix alfred"
 
 demultiplex:
 	mkdir -p $(out)
@@ -40,3 +42,6 @@ varcall_mpileup:
 varcall_freebayes:
 	freebayes -f ${REF} $(bamfilePrefix).dedup.sorted.bam > $(bamfilePrefix).freebayes.vcf
 	bcftools norm -f ${REF} -o $(bamfilePrefix).freebayes.norm.vcf $(bamfilePrefix).freebayes.vcf
+
+alfred:
+	alfred qc -r ${REF} -b ${target} -j $(prefix).json.gz -o $(prefix).tsv.gz $(prefix).dedup.sorted.bam
