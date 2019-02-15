@@ -44,4 +44,4 @@ varcall_freebayes:
 	bcftools norm -f ${REF} -o $(bamfilePrefix).freebayes.norm.vcf $(bamfilePrefix).freebayes.vcf
 
 alfred:
-	alfred qc -r ${REF} -b ${target} -j $(prefix).json.gz -o $(prefix).tsv.gz $(prefix).dedup.sorted.bam
+	alfred qc -r ${REF} -b ${target} -j $(bamfilePrefix).json.gz -o $(bamfilePrefix).tsv.gz $(bamfilePrefix).dedup.sorted.bam
