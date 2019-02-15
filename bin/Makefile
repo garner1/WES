@@ -8,7 +8,8 @@ usage:
 	@echo "       make exp=string run=string R1=fullpath R2=fullpath align"
 	@echo "       make prefix=Prefix2bamfile dedup"
 	@echo "       make chrom=chr prefix=fullpathPrefix dedup_parallel"
-	@echo "       make bamfilePrefix=fullpathPrefix varcall"
+	@echo "       make bamfilePrefix=fullpathPrefix varcall_mpileup"
+	@echo "       make bamfilePrefix=fullpathPrefix varcall_freebayes"
 
 demultiplex:
 	mkdir -p $(out)
@@ -32,5 +33,8 @@ dedup_parallel:				#parallelize wrt chromosomes
 	samtools merge -@ 24 $(prefix).dedup.bam $(prefix).$(chrom).dedup.bam
 	samtools sort -@ 8 $(prefix).dedup.bam > $(prefix).dedup.sorted.bam
 
-varcall:
-	samtools mpileup -uvf ${REF} $(bamfilePrefix).dedup.sorted.bam | bcftools call -vm -Ov > $(bamfilePrefix).vcf
+varcall_mpileup:
+	samtools mpileup -uvf ${REF} $(bamfilePrefix).dedup.sorted.bam | bcftools call -vm -Ov > $(bamfilePrefix).mpileup.vcf
+
+varcall_freebayes:
+	freebayes -f ${REF} $(bamfilePrefix).dedup.sorted.bam > $(bamfilePrefix).freebayes.vcf
