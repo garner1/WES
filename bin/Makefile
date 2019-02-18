@@ -46,3 +46,8 @@ varcall_freebayes:
 
 alfred:
 	alfred qc -r ${REF} -b ${target_xgen} -j $(bamfilePrefix).json.gz -o $(bamfilePrefix).tsv.gz $(bamfilePrefix).dedup.sorted.bam
+
+multisample:
+	bcftools mpileup -Ou -f ${REF} /media/garner1/hdd/WES/S??_BC145/S??.dedup.sorted.bam |\
+	bcftools call -vm -Ov -o /media/garner1/hdd/WES/allsamples-bc145.mpileup.vcf.gz
+	bcftools norm -f ${REF} -o /media/garner1/hdd/WES/allsamples-bc145.mpileup.norm.vcf /media/garner1/hdd/WES/allsamples-bc145.mpileup.vcf.gz
