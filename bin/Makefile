@@ -1,7 +1,8 @@
 REF=~/Work/genomes/Homo_sapiens.GRCh37.dna.primary_assembly.fa/GRCh37.fa
 numbproc=24
 datadir=/media/garner1/hdd/WES/$(exp)_$(run) 
-target=~/Work/dataset/agilent/S07604715_Covered.woChr.bed
+target_exome=~/Work/dataset/agilent/S07604715_Covered.woChr.bed
+target_xgen=~/Work/dataset/GenesSubset/xgen.bed
 
 usage:
 	@echo "Usage: make rawDataDir=fullpath baseCalls=fullpath out=fullpath demultiplex"
@@ -44,4 +45,4 @@ varcall_freebayes:
 	bcftools norm -f ${REF} -o $(bamfilePrefix).freebayes.norm.vcf $(bamfilePrefix).freebayes.vcf
 
 alfred:
-	alfred qc -r ${REF} -b ${target} -j $(bamfilePrefix).json.gz -o $(bamfilePrefix).tsv.gz $(bamfilePrefix).dedup.sorted.bam
+	alfred qc -r ${REF} -b ${target_xgen} -j $(bamfilePrefix).json.gz -o $(bamfilePrefix).tsv.gz $(bamfilePrefix).dedup.sorted.bam
