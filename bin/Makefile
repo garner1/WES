@@ -1,4 +1,5 @@
-REF=~/Work/genomes/Homo_sapiens.GRCh37.dna.primary_assembly.fa/GRCh37.fa
+REF=/home/garner1/Work/genomes/Homo_sapiens.GRCh37.dna.primary_assembly.fa/GRCh37.fa
+BED=/home/garner1/Work/genomes/Homo_sapiens.GRCh37.dna.primary_assembly.fa/GRCh37.bed
 numbproc=24
 datadir=/media/garner1/hdd/WES/$(exp)_$(run) 
 target_exome=~/Work/dataset/agilent/S07604715_Covered.woChr.bed
@@ -13,6 +14,7 @@ usage:
 	@echo "       make bamfilePrefix=fullpathPrefix varcall_mpileup"
 	@echo "       make bamfilePrefix=fullpathPrefix varcall_freebayes"
 	@echo "       make bamfilePrefix=fullpathPrefix alfred"
+	@echo "       make multisample"
 
 demultiplex:
 	mkdir -p $(out)
@@ -48,6 +50,6 @@ alfred:
 	alfred qc -r ${REF} -b ${target_xgen} -j $(bamfilePrefix).json.gz -o $(bamfilePrefix).tsv.gz $(bamfilePrefix).dedup.sorted.bam
 
 multisample:
-	bcftools mpileup -Ou -f ${REF} /media/garner1/hdd/WES/S??_BC145/S??.dedup.sorted.bam |\
-	bcftools call -vm -Ov -o /media/garner1/hdd/WES/allsamples-bc145.mpileup.vcf.gz
-	bcftools norm -f ${REF} -o /media/garner1/hdd/WES/allsamples-bc145.mpileup.norm.vcf /media/garner1/hdd/WES/allsamples-bc145.mpileup.vcf.gz
+	cat ${BED} | parallel "bcftools mpileup -Ou -f /home/garner1/Work/genomes/Homo_sapiens.GRCh37.dna.primary_assembly.fa/GRCh37.fa -r {} /media/garner1/hdd/WES/S??_BC145/S??.dedup.sorted.bam | bcftools call -vm -Ov -o /media/garner1/hdd/WES/{}.mpileup.vcf.gz"
+
+	cat ${BED} | parallel "bcftools norm -f /home/garner1/Work/genomes/Homo_sapiens.GRCh37.dna.primary_assembly.fa/GRCh37.fa -o /media/garner1/hdd/WES/{}.mpileup.norm.vcf /media/garner1/hdd/WES/{}.mpileup.vcf.gz"
