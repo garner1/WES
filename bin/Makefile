@@ -4,6 +4,7 @@ numbproc=24
 datadir=/media/garner1/hdd/WES/$(exp)_$(run) 
 target_exome=~/Work/dataset/agilent/S07604715_Covered.woChr.bed
 target_xgen=~/Work/dataset/GenesSubset/xgen.bed
+GTF=~/Work/genomes/Homo_sapiens.GRCh37.87.gtf
 
 usage:
 	@echo "Usage: make rawDataDir=fullpath baseCalls=fullpath out=fullpath demultiplex"
@@ -14,7 +15,11 @@ usage:
 	@echo "       make bamfilePrefix=fullpathPrefix varcall_mpileup"
 	@echo "       make bamfilePrefix=fullpathPrefix varcall_freebayes"
 	@echo "       make bamfilePrefix=fullpathPrefix alfred"
-	@echo "       make multisample"
+	@echo "       make multisample_mpileup"
+	@echo "       make prefix=fullpath2vcf.norm variant_stats"
+	@echo "       make inputVcf=fullpath2vcfPrefix variant_filter"
+	@echo "       make inputVcf=fullpath2vcf variant_effect_predictor"
+	@echo "       make inputPrefix=fullPath2bam features_count"
 
 demultiplex:
 	mkdir -p $(out)
@@ -49,7 +54,19 @@ varcall_freebayes:
 alfred:
 	alfred qc -r ${REF} -b ${target_xgen} -j $(bamfilePrefix).json.gz -o $(bamfilePrefix).tsv.gz $(bamfilePrefix).dedup.sorted.bam
 
-multisample:
+multisample_mpileup:
 	cat ${BED} | parallel "bcftools mpileup -Ou -f /home/garner1/Work/genomes/Homo_sapiens.GRCh37.dna.primary_assembly.fa/GRCh37.fa -r {} /media/garner1/hdd/WES/S??_BC145/S??.dedup.sorted.bam | bcftools call -vm -Ov -o /media/garner1/hdd/WES/{}.mpileup.vcf.gz"
 
 	cat ${BED} | parallel "bcftools norm -f /home/garner1/Work/genomes/Homo_sapiens.GRCh37.dna.primary_assembly.fa/GRCh37.fa -o /media/garner1/hdd/WES/{}.mpileup.norm.vcf /media/garner1/hdd/WES/{}.mpileup.vcf.gz"
+
+variant_stats:
+	bcftools stats -F ${REF} -s - $(prefix).norm.vcf > $(prefix).norm.vcf.stats
+
+variant_filter:
+	bcftools filter -o ${inputVcf}.filtered.vcf -s LOWQUAL -i'%QUAL>10' ${inputVcf}
+
+variant_effect_predictor:
+	snpEff -Xmx30G -csvStats $(inputVcf).snpeff.csv GRCh37.75 $(inputVcf) > $(inputVcf).annotated.vcf
+
+features_count:
+	featureCounts -p -t exon -g gene_id -a ${GTF} -o $(inputPrefix).counts.txt $(inputPrefix).dedup.sorted.bam
