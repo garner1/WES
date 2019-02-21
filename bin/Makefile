@@ -63,7 +63,7 @@ variant_stats:
 	bcftools stats -F ${REF} -s - $(prefix).norm.vcf > $(prefix).norm.vcf.stats
 
 variant_filter:
-	bcftools filter -o ${inputVcf}.filtered.vcf -s LOWQUAL -i'%QUAL>10' ${inputVcf}
+	bcftools filter -o $(inputVcf).filtered.vcf -s LOWQUAL -e '%QUAL<20 || DP>250' $(inputVcf)
 
 variant_effect_predictor:
 	snpEff -Xmx30G -csvStats $(inputVcf).snpeff.csv GRCh37.75 $(inputVcf) > $(inputVcf).annotated.vcf
