@@ -16,7 +16,7 @@ usage:
 	@echo "       make bamfilePrefix=fullpathPrefix varcall_freebayes"
 	@echo "       make bamfilePrefix=fullpathPrefix alfred"
 	@echo "       make multisample_mpileup"
-	@echo "       make prefix=fullpath2vcf.norm variant_stats"
+	@echo "       make inputVcf=fullpath2vcf.norm variant_stats"
 	@echo "       make inputVcf=fullpath2vcfPrefix variant_filter"
 	@echo "       make inputVcf=fullpath2vcf variant_effect_predictor"
 	@echo "       make inputPrefix=fullPath2bam features_count"
@@ -60,7 +60,7 @@ multisample_mpileup:
 	cat ${BED} | parallel "bcftools norm -f /home/garner1/Work/genomes/Homo_sapiens.GRCh37.dna.primary_assembly.fa/GRCh37.fa -o /media/garner1/hdd/WES/{}.mpileup.norm.vcf /media/garner1/hdd/WES/{}.mpileup.vcf.gz"
 
 variant_stats:
-	bcftools stats -F ${REF} -s - $(prefix).norm.vcf > $(prefix).norm.vcf.stats
+	bcftools stats -F ${REF} -s - $(inputVcf) > $(inputVcf).norm.vcf.stats
 
 variant_filter:
 	bcftools filter -o $(inputVcf).filtered.vcf -s LOWQUAL -e '%QUAL<20 || DP>250' $(inputVcf)
